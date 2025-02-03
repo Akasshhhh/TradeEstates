@@ -13,12 +13,12 @@ function NewPostPage() {
 
   const navigate = useNavigate()
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const inputs = Object.fromEntries(formData)
     console.log(inputs)
-    try{
+    try {
       const res = await apiRequest.post("/posts", {
         postData: {
           title: inputs.title,
@@ -26,7 +26,7 @@ function NewPostPage() {
           address: inputs.address,
           city: inputs.city,
           bedroom: parseInt(inputs.bedroom),
-          bathroom: parseInt(inputs.bathroon),
+          bathroom: parseInt(inputs.bathroom),
           type: inputs.type,
           property: inputs.property,
           latitude: inputs.latitude,
@@ -44,10 +44,11 @@ function NewPostPage() {
           restaurant: parseInt(inputs.restaurant),
         }
       })
-      navigate("/"+res.data.id)
-    }catch(err){
-      console.log(error)
-      setError(err)
+      console.log(res)
+      navigate("/" + res.data.id)
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || err.message || "An unknown error occurred");
     }
   }
 
@@ -71,7 +72,7 @@ function NewPostPage() {
             </div>
             <div className="item description">
               <label htmlFor="desc">Description</label>
-            <ReactQuill theme="snow" onChange={setValue} value={value} />
+              <ReactQuill theme="snow" onChange={setValue} value={value} />
             </div>
             <div className="item">
               <label htmlFor="city">City</label>
@@ -157,15 +158,15 @@ function NewPostPage() {
         </div>
       </div>
       <div className="sideContainer">
-      {images.map((image,index)=>(
-        <img src={image} key={index} alt="" />
-      ))}
+        {images.map((image, index) => (
+          <img src={image} key={index} alt="" />
+        ))}
         <UploadWidget uwConfig={{
-          cloudName : "akashisntreal",
-          uploadPreset : "estate",
-          multiple : true,
+          cloudName: "akashisntreal",
+          uploadPreset: "estate",
+          multiple: true,
           maxImageFileSize: 2000000,
-          folder : "posts"
+          folder: "posts"
         }} setState={setImages} />
       </div>
     </div>

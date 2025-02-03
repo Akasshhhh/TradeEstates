@@ -1,10 +1,25 @@
 import prisma from "../lib/prisma.js"
 
 export const getPosts = async (req, res) => {
+    const query = req.query
+    console.log(query)
     try {
-        const posts = await prisma.post.findMany()
-
-        res.status(200).json(posts)
+        const posts = await prisma.post.findMany({
+            where:{
+                city: query.city || undefined,
+                type: query.type || undefined,
+                property: query.property || undefined,
+                bedroom: parseInt(query.bedroom) || undefined,
+                price: {
+                    gte: parseInt(query.minPrice) || 0,
+                    lte: parseInt(query.maxPrice) || 10000000
+                }
+            }
+        })
+        console.log("The posts from getPosts are: ", posts) 
+        setTimeout(() => {
+            res.status(200).json(posts)
+        }, 1000)
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: "Failed to get posts!" })
@@ -33,26 +48,34 @@ export const getPost = async (req, res) => {
 
 
 export const addPost = async (req, res) => {
+    const body = req.body;
+    const tokenUserId = req.userId; // Ensure this is correctly set
 
-    const body = req.body
-    const tokenUserId = req.userId
     try {
+        console.log("Request Body:", body); // Debugging: Log the request body
+        console.log("User ID:", tokenUserId); // Debugging: Log the userId
+
         const newPost = await prisma.post.create({
             data: {
-                ...body.postData,
-                userId : tokenUserId,
-                postDetail : {
-                    create : body.postDetail
-                }
-            }
-        })
-        console.log(newPost)
-        res.status(200).json(newPost)
+                ...body.postData, // Spread postData fields
+                user: {
+                    connect: {
+                        id: tokenUserId, // Connect to the existing user
+                    },
+                },
+                postDetail: {
+                    create: body.postDetail, // Create related PostDetail
+                },
+            },
+        });
+
+        console.log("New Post:", newPost); // Debugging: Log the created post
+        res.status(200).json(newPost);
     } catch (err) {
-        console.log(err)
-        res.status(500).json({ message: "Failed to add post!" })
+        console.log("Error:", err); // Debugging: Log the full error
+        res.status(500).json({ message: "Failed to add post!" });
     }
-}
+};
 export const updatePost = async (req, res) => {
     try {
 
