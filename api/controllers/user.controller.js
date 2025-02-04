@@ -42,11 +42,11 @@ export const updateUser = async (req, res) => {
             where: { id },
             data: {
                 ...inputs,
-                ...(updatedPassword && {password : updatedPassword}),
-                ...(avatar && {avatar})
+                ...(updatedPassword && { password: updatedPassword }),
+                ...(avatar && { avatar })
             }
         })
-        const {password:userPassword, ...otherInfo} = updatedUser
+        const { password: userPassword, ...otherInfo } = updatedUser
         res.status(200).json(otherInfo)
     } catch (err) {
         console.log(err)
@@ -60,15 +60,53 @@ export const deleteUser = async (req, res) => {
     const id = req.params.id
     const tokenUserId = req.userId
 
-    if(id !== tokenUserId) return res.status(403).json({message : "Not authorized!"})
+    if (id !== tokenUserId) return res.status(403).json({ message: "Not authorized!" })
 
     try {
         await prisma.user.delete({
-            where: {id}
+            where: { id }
         })
-        res.status(200).json({message : "User deleted"})
+        res.status(200).json({ message: "User deleted" })
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: "Failed to delete user" })
+    }
+}
+
+export const savePost = async (req, res) => {
+    const postId = req.body.postId
+    const tokenUserId = req.userId
+    console.log("Request body:", req.body);
+    console.log("Token User ID:", req.userId);
+    try {
+        const savedPost = await prisma.savedPost.findUnique({
+            where: {
+                userId_postId: { //This means userId and postId together form a composite unique constraint in the database.
+                    userId: tokenUserId,
+                    postId
+                }
+            }
+        })
+
+        if (savedPost) {
+            await prisma.savedPost.delete({
+                where: {
+                    id: savedPost.id
+                }
+            })
+            res.status(200).json({ message: "Post unsaved" })
+        }
+        else {
+            await prisma.savedPost.create({
+                data: {
+                    userId: tokenUserId,
+                    postId
+                }
+            })
+            res.status(200).json({ message: "Post saved" })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: "Failed to save post" })
     }
 }
