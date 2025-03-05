@@ -1,31 +1,30 @@
 import "./singlePage.scss";
 import Slider from "../../components/slider/Slider";
 import Map from "../../components/map/Map";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate, useLoaderData } from "react-router-dom";
 import DOMPurify from "dompurify";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import  apiRequest  from "../../lib/apiRequest.js";
+import apiRequest from "../../lib/apiRequest";
 
 function SinglePage() {
   const post = useLoaderData();
-  const [saved, setSaved] = useState(post.isSaved)
-  const {currentUser} = useContext(AuthContext)
+  const [saved, setSaved] = useState(post.isSaved);
+  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  
-  
-  const handleSave = async () =>{
-    setSaved((prev) => !prev)
-    if(!currentUser){
-      navigate("/login")
+
+  const handleSave = async () => {
+    if (!currentUser) {
+      navigate("/login");
     }
-    try{
-      await apiRequest("/users/save", {postId: post.id})
-    }catch(err){
-      console.log(err)
-      setSaved((prev) => !prev)
+    setSaved((prev) => !prev);
+    try {
+      await apiRequest.post("/users/save", { postId: post.id });
+    } catch (err) {
+      console.log(err);
+      setSaved((prev) => !prev);
     }
-  }
+  };
 
   return (
     <div className="singlePage">
@@ -47,7 +46,12 @@ function SinglePage() {
                 <span>{post.user.username}</span>
               </div>
             </div>
-            <div className="bottom" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(post.postDetail.desc)}}></div> 
+            <div
+              className="bottom"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(post.postDetail.desc),
+              }}
+            ></div>
           </div>
         </div>
       </div>
@@ -62,7 +66,7 @@ function SinglePage() {
                 {post.postDetail.utilities === "owner" ? (
                   <p>Owner is responsible</p>
                 ) : (
-                  <p>Renter is responsible</p>
+                  <p>Tenant is responsible</p>
                 )}
               </div>
             </div>
@@ -71,9 +75,9 @@ function SinglePage() {
               <div className="featureText">
                 <span>Pet Policy</span>
                 {post.postDetail.pet === "allowed" ? (
-                  <p>Pets are allowed</p>
+                  <p>Pets Allowed</p>
                 ) : (
-                  <p>Pets are not allowed</p>
+                  <p>Pets not Allowed</p>
                 )}
               </div>
             </div>
@@ -97,7 +101,7 @@ function SinglePage() {
             </div>
             <div className="size">
               <img src="/bath.png" alt="" />
-              <span>{post.bathroom} beds</span>
+              <span>{post.bathroom} bathroom</span>
             </div>
           </div>
           <p className="title">Nearby Places</p>
@@ -106,7 +110,12 @@ function SinglePage() {
               <img src="/school.png" alt="" />
               <div className="featureText">
                 <span>School</span>
-                <p>{post.postDetail.school}m away</p>
+                <p>
+                  {post.postDetail.school > 999
+                    ? post.postDetail.school / 1000 + "km"
+                    : post.postDetail.school + "m"}{" "}
+                  away
+                </p>
               </div>
             </div>
             <div className="feature">
@@ -133,9 +142,14 @@ function SinglePage() {
               <img src="/chat.png" alt="" />
               Send a Message
             </button>
-            <button onClick={handleSave}>
+            <button
+              onClick={handleSave}
+              style={{
+                backgroundColor: saved ? "#fece51" : "white",
+              }}
+            >
               <img src="/save.png" alt="" />
-              {saved ? "Saved" : "Save"}
+              {saved ? "Place Saved" : "Save the Place"}
             </button>
           </div>
         </div>

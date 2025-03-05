@@ -9,7 +9,7 @@ function Filter() {
   const [query, setQuery] = useState({
     type: searchParams.get("type") || "",
     city: searchParams.get("city") || "",
-    property: searchParams.get("property") || undefined, 
+    property: searchParams.get("property") || "", 
     minPrice: searchParams.get("minPrice") || "0",
     maxPrice: searchParams.get("maxPrice") || "10000000",
     bedroom: searchParams.get("bedroom") || "1",
