@@ -1,16 +1,52 @@
 import { Server } from "socket.io";
 
 const io = new Server({
-    cors: {
-        origin: "http://localhost:5173"
-    }
-})
+  cors: {
+    origin: "http://localhost:5173",
+  },
+});
+
+let onlineUser = [];
+
+const addUser = (userId, socketId) => {
+  const userExits = onlineUser.find((user) => user.userId === userId);
+  if (!userExits) {
+    onlineUser.push({ userId, socketId });
+    console.log(`User added: ${userId} with socket ID: ${socketId}`);
+  }
+};
+
+const removeUser = (socketId) => {
+  onlineUser = onlineUser.filter((user) => user.socketId !== socketId);
+  console.log(`User removed with socket ID: ${socketId}`);
+};
+
+const getUser = (userId) => {
+  return onlineUser.find((user) => user.userId === userId);
+};
 
 io.on("connection", (socket) => {
-    console.log(socket.id)
-    socket.on("test", (data)=> {
-        console.log(data)
-    })
-})
+  console.log(`User connected: ${socket.id}`);
 
-io.listen(4000)
+  socket.on("newUser", (userId) => {
+    addUser(userId, socket.id);
+  });
+
+  socket.on("sendMessage", ({ receiverId, data }) => {
+    const receiver = getUser(receiverId);
+    if (receiver) {
+      io.to(receiver.socketId).emit("getMessage", data);
+      console.log(`Message sent to ${receiverId}:`, data);
+    } else {
+      console.log(`Receiver not found or not online: ${receiverId}`);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.id}`);
+    removeUser(socket.id);
+  });
+});
+
+io.listen(4000);
+console.log("Socket.IO server listening on port 4000");
