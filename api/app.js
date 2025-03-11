@@ -4,6 +4,7 @@ import authRoutes from "./routes/auth.route.js";
 import testRoutes from "./routes/test.route.js";
 import userRoutes from "./routes/user.route.js";
 import chatRoutes from "./routes/chat.route.js";
+import test2Routes from "./routes/test2.route.js";
 import messageRoutes from "./routes/message.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors"
@@ -27,6 +28,7 @@ app.use('/api/test', testRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/chats', chatRoutes)
 app.use('/api/messages', messageRoutes)
+app.use('/api/test2', test2Routes)
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
