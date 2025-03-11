@@ -17,6 +17,10 @@ app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })) //We need c
 app.use(express.json())
 app.use(cookieParser())
 
+app.get('/ping', (req, res) => {
+    res.send('pong')
+})
+
 app.use('/api/posts', postRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/test', testRoutes)
