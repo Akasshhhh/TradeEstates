@@ -15,6 +15,7 @@ import { listPageLoader, profilePageLoader, singlePageLoader } from "./lib/loade
 
 
 function App() {
+  console.log(import.meta.env.VITE_API_URL)
   const router = createBrowserRouter([
     {
       path: "/",
