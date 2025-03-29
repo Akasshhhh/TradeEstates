@@ -3,3 +3,6 @@
 /api/.gitignore
 /client/node_modules
 /client/.env
+/sockets/node_modules
+.gitignore
+.env
