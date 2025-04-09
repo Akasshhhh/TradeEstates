@@ -51,12 +51,20 @@ export const login = async (req, res) => {
 
         const {password:userPasword, ... userInfo} = user
         
+        console.log('Setting cookie with options:', {
+            httpOnly: true,
+            maxAge: AGE,
+            secure: true,
+            sameSite: 'none',
+            domain: '.onrender.com'
+        });
+
         res.cookie("token", token, { 
             httpOnly: true, 
             maxAge: AGE,
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
             sameSite: 'none',
-            domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined
+            domain: '.onrender.com'
         }).status(200).json(userInfo)
 
     } catch (error) {
