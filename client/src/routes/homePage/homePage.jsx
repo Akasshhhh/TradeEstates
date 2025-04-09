@@ -4,7 +4,7 @@ import "./homePage.scss";
 import { AuthContext } from "../../context/AuthContext";
 
 function HomePage() {
-  const {currentUser} = useContext(AuthContext)
+  const { currentUser } = useContext(AuthContext)
   console.log(currentUser)
   return (
     <div className="homePage">
@@ -12,10 +12,10 @@ function HomePage() {
         <div className="wrapper">
           <h1 className="title">Find Real Estate & Get Your Dream Place</h1>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos
-            explicabo suscipit cum eius, iure est nulla animi consequatur
-            facilis id pariatur fugit quos laudantium temporibus dolor ea
-            repellat provident impedit!
+            Welcome to TradeEstates, your premier destination for finding the perfect property.
+            Whether you're looking to buy your first home, rent a cozy apartment, or invest
+            in land, our extensive listings cover it all. Use our powerful search tools
+            to filter by location, price, property type, and more.
           </p>
           <SearchBar />
           <div className="boxes">
