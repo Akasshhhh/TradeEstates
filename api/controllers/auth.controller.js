@@ -55,16 +55,14 @@ export const login = async (req, res) => {
             httpOnly: true,
             maxAge: AGE,
             secure: true,
-            sameSite: 'none',
-            domain: '.onrender.com'
+            sameSite: 'none'
         });
 
         res.cookie("token", token, { 
             httpOnly: true, 
             maxAge: AGE,
             secure: true,
-            sameSite: 'none',
-            domain: '.onrender.com'
+            sameSite: 'none'
         }).status(200).json(userInfo)
 
     } catch (error) {
