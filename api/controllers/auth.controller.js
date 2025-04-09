@@ -55,14 +55,16 @@ export const login = async (req, res) => {
             httpOnly: true,
             maxAge: AGE,
             secure: true,
-            sameSite: 'none'
+            sameSite: 'none',
+            path: '/'
         });
 
         res.cookie("token", token, { 
             httpOnly: true, 
             maxAge: AGE,
             secure: true,
-            sameSite: 'none'
+            sameSite: 'none',
+            path: '/'
         }).status(200).json(userInfo)
 
     } catch (error) {
